@@ -20,13 +20,19 @@ app.use('/api/auth', authRoutes);
 app.use('/api/2fa', twofaRoutes);
 
 app.get('/', (req, res) => {
-    res.send('2FA API is running');
+    res.send('2FA API is running and healthy.');
 });
 
 const PORT = process.env.PORT || 3000;
 
-pool.connect()
-  .then(() => {
-    app.listen(PORT, () => {});
-  })
-  .catch(err => {});
+app.listen(PORT, () => {
+  console.log(`Server is running and listening on port ${PORT}`);
+  
+  pool.connect(err => {
+    if (err) {
+      console.error('FATAL: Database connection failed.', err.stack);
+    } else {
+      console.log('Database connection has been established successfully.');
+    }
+  });
+});
