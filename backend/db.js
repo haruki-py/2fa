@@ -11,6 +11,7 @@ const pool = new Pool({
 const initializeDb = async () => {
   const client = await pool.connect();
   try {
+    console.log('Initializing database tables...');
     await client.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -29,11 +30,14 @@ const initializeDb = async () => {
         auth_tag BYTEA NOT NULL
       );
     `);
+    console.log('Database tables initialized successfully.');
+  } catch(err) {
+    console.error('Error initializing database tables:', err.stack);
   } finally {
     client.release();
   }
 };
 
-initializeDb().catch(e => console.error(e.stack));
+initializeDb();
 
 module.exports = pool;
